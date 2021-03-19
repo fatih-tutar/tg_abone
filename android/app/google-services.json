@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "599322286185",
+    "project_id": "tg-abone-fapp",
+    "storage_bucket": "tg-abone-fapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599322286185:android:425a8c4260b120a4a12af8",
+        "android_client_info": {
+          "package_name": "com.example.tg_abone_fapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599322286185-44dptai7atl36gpg8e6fn1gpv876aglr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tg_abone_fapp",
+            "certificate_hash": "8dd814f88abac6395bb63cdf485e01210fb54b16"
+          }
+        },
+        {
+          "client_id": "599322286185-ds93ghkji2l44oatohin0o3fucfn59f4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6-IlOlZrlWO5TVzWvLoihjl1xmTS4yFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599322286185-ds93ghkji2l44oatohin0o3fucfn59f4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
