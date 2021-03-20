@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sms_autofill/sms_autofill.dart';
@@ -19,83 +18,237 @@ class _LoginState extends State<Login> {
   final TextEditingController _smsController = TextEditingController();
   String _verificationId;
   final SmsAutoFill _autoFill = SmsAutoFill();
+  String kodlunumber;
+  int loginScreen = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Center(
-              child: Image.asset("img/logo.png", height: 50, fit: BoxFit.fill)),
-          backgroundColor: Colors.white,
+      key: _scaffoldKey,
+      resizeToAvoidBottomInset: false,
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Expanded(
+          child: loginScreen == 0
+              ? Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                    ),
+                    Image.asset("img/icon.png", height: 100, fit: BoxFit.fill),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(20, 30, 20, 30),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFbd1321),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFffffff),
+                              borderRadius: BorderRadius.circular(15.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 6.0,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            height: 60.0,
+                            child: TextFormField(
+                              controller: _phoneNumberController,
+                              onTap: () async => {
+                                //kodlunumber = await _autoFill.hint,
+                                //_phoneNumberController.text = kodlunumber.substring(3)
+                              },
+                              keyboardType: TextInputType.number,
+                              style: TextStyle(
+                                  color: Color(0xFFbd1321),
+                                  fontFamily: 'OpenSans',
+                                  fontSize: 20,
+                                  letterSpacing: 5),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.only(top: 14.0),
+                                prefixIcon: Icon(
+                                  Icons.phone,
+                                  color: Color(0xFFbd1321),
+                                ),
+                                hintText: 'Telefon',
+                                hintStyle: TextStyle(
+                                    color: Color(0xFFbd1321),
+                                    fontSize: 20,
+                                    letterSpacing: 2),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(top: 25.0),
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 10.0,
+                                padding: EdgeInsets.all(15.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                primary: Colors.white,
+                              ),
+                              onPressed: () async {
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
+                                verifyPhoneNumber();
+                                setState(() {
+                                  loginScreen = 1;
+                                });
+                              },
+                              child: Text(
+                                'Giriş',
+                                style: TextStyle(
+                                  color: Color(0xFFbd1321),
+                                  letterSpacing: 5,
+                                  fontSize: 23.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                    ),
+                    Image.asset("img/icon.png", height: 100, fit: BoxFit.fill),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(20, 30, 20, 30),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFbd1321),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFffffff),
+                              borderRadius: BorderRadius.circular(15.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 6.0,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            height: 60.0,
+                            child: TextFormField(
+                              controller: _smsController,
+                              keyboardType: TextInputType.number,
+                              style: TextStyle(
+                                  color: Color(0xFFbd1321),
+                                  fontFamily: 'OpenSans',
+                                  fontSize: 20,
+                                  letterSpacing: 5),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.only(top: 14.0),
+                                prefixIcon: Icon(
+                                  Icons.phone,
+                                  color: Color(0xFFbd1321),
+                                ),
+                                hintText: 'Doğrulama Kodu',
+                                hintStyle: TextStyle(
+                                    color: Color(0xFFbd1321),
+                                    fontSize: 20,
+                                    letterSpacing: 2),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(top: 25.0),
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 10.0,
+                                padding: EdgeInsets.all(15.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                primary: Colors.white,
+                              ),
+                              onPressed: () async {
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
+                                signInWithPhoneNumber();
+                              },
+                              child: Text(
+                                'Giriş',
+                                style: TextStyle(
+                                  color: Color(0xFFbd1321),
+                                  letterSpacing: 5,
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
         ),
-        key: _scaffoldKey,
-        resizeToAvoidBottomInset: false,
-        body: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  TextFormField(
-                    controller: _phoneNumberController,
-                    decoration: const InputDecoration(
-                        labelText: 'Telefon Numarası (+xx xxx-xxx-xxxx)'),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      child: Text("Mevcut Numarayı Al"),
-                      onPressed: () async =>
-                          {_phoneNumberController.text = await _autoFill.hint},
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.orange,
-                      ),
-                      child: Text("Numarayı Doğrula"),
-                      onPressed: () async {
-                        verifyPhoneNumber();
-                      },
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _smsController,
-                    decoration:
-                        const InputDecoration(labelText: 'Doğrulama Kodu'),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.yellow,
-                        ),
-                        onPressed: () async {
-                          signInWithPhoneNumber();
-                        },
-                        child: Text(
-                          "Giriş",
-                          style: TextStyle(color: Colors.black),
-                        )),
-                  ),
-                ],
-              )),
-        ));
+      ),
+    );
   }
 
   void verifyPhoneNumber() async {
     PhoneVerificationCompleted verificationCompleted =
         (PhoneAuthCredential phoneAuthCredential) async {
       await _auth.signInWithCredential(phoneAuthCredential);
+      final User user =
+          (await _auth.signInWithCredential(phoneAuthCredential)).user;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CampaignPage(
+            user: user,
+          ),
+        ),
+      );
       showSnackbar(
           "Telefon numarası otomatik olarak doğrulandı ve kullanıcı giriş yaptı : ${_auth.currentUser.uid}");
     };
