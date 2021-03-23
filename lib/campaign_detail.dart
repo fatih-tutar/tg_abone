@@ -1,26 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tg_abone_fapp/campaign_detail.dart';
-import 'package:tg_abone_fapp/login.dart';
-import 'package:tg_abone_fapp/models/network.dart';
 
-class CampaignPage extends StatefulWidget {
-  CampaignPage({Key key, this.user}) : super(key: key);
+class CampaignDetail extends StatefulWidget {
+  final int campaign_id;
 
-  final User user;
+  const CampaignDetail({Key key, this.campaign_id}) : super(key: key);
+
   @override
-  _CampaignPageState createState() => _CampaignPageState();
+  _CampaignDetailState createState() => _CampaignDetailState();
 }
 
-class _CampaignPageState extends State<CampaignPage> {
-  Future<dynamic> data;
-  @override
-  void initState() {
-    super.initState();
-    Network network = new Network('https://sosyalisler.ihlas.com.tr/app.json');
-    data = network.fetchData();
-  }
-
+class _CampaignDetailState extends State<CampaignDetail> {
   List campaigns = [
     {
       "id": 6,
@@ -84,74 +73,37 @@ class _CampaignPageState extends State<CampaignPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Container(),
-        title: Center(
-            child: Image.asset("img/logo.png", height: 50, fit: BoxFit.fill)),
-        backgroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.logout,
-              color: Colors.red,
-              size: 30,
-            ),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Login(),
-                ),
-              );
-            },
+        backgroundColor: Colors.red.shade500,
+        title: Container(
+          padding: EdgeInsets.fromLTRB(60, 0, 0, 0),
+          child: Text(
+            "Kampanya Detay",
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
-        ],
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
-          color: Color(0xFFf5f5f5),
+          color: Colors.grey.shade200,
         ),
-        child: FutureBuilder(
-          future: data,
-          builder: (context, AsyncSnapshot<dynamic> snapshot) {
-            if (snapshot.hasData) {
-              return customList(context, snapshot.data);
-            } else if (snapshot.hasError) {
-              //return customList(context, snapshot.data);
-              return Text(
-                "Hata var. " + snapshot.error.toString(),
-                style: TextStyle(fontSize: 30),
-              );
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget customList(BuildContext context, List<dynamic> data) {
-    return ListView.builder(
-      itemCount: data == null ? 0 : data.length,
-      itemBuilder: (context, int index) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
               ),
               child: Column(
                 children: [
                   Container(
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset("img/" + campaigns[index]['image'])),
+                        child: Image.asset(
+                            "img/" + campaigns[widget.campaign_id]['image'])),
                     padding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 5.0),
                   ),
                   Container(
                     child: Text(
-                      '${data[index]['title']}',
+                      '${campaigns[widget.campaign_id]['title']}',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -163,7 +115,7 @@ class _CampaignPageState extends State<CampaignPage> {
                   Container(
                     child: ListTile(
                       title: Text(
-                        '${campaigns[index]['text']}',
+                        '${campaigns[widget.campaign_id]['text']}',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
@@ -172,49 +124,26 @@ class _CampaignPageState extends State<CampaignPage> {
                           fontFamily: 'Trajan Pro',
                         ),
                       ),
-                      trailing: Container(
-                        width: 42,
-                        padding: EdgeInsets.fromLTRB(2, 3, 2, 3),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                            ),
-                            padding: MaterialStateProperty.all(
-                              EdgeInsets.fromLTRB(12, 12, 12, 12),
-                            ),
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.white),
-                            elevation: MaterialStateProperty.all(10.0),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CampaignDetail(
-                                  campaign_id: index,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            color: Colors.red.shade500,
-                            size: 15,
-                          ),
-                        ),
-                      ),
                     ),
                     padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 10.0),
                   ),
                 ],
               ),
             ),
-          ),
-        );
-      },
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.fromLTRB(15, 20, 20, 20),
+              child: Text(
+                "Kampanya Koşulları",
+                style: TextStyle(
+                  color: Colors.grey.shade500,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
