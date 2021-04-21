@@ -261,11 +261,9 @@ class _LoginState extends State<Login> {
   }
 
   void verifyPhoneNumber() async {
-    PhoneVerificationCompleted verificationCompleted =
-        (PhoneAuthCredential phoneAuthCredential) async {
+    PhoneVerificationCompleted verificationCompleted = (PhoneAuthCredential phoneAuthCredential) async {
       await _auth.signInWithCredential(phoneAuthCredential);
-      final User user =
-          (await _auth.signInWithCredential(phoneAuthCredential)).user;
+      final User user = (await _auth.signInWithCredential(phoneAuthCredential)).user;
 
       Navigator.pushReplacement(
         context,

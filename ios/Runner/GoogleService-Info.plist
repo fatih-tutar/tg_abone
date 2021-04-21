@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>599322286185-fkl9ae8n7qi2bqu1lb57qo0le1cqj4jj.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.599322286185-fkl9ae8n7qi2bqu1lb57qo0le1cqj4jj</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>599322286185-44dptai7atl36gpg8e6fn1gpv876aglr.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD7xBJdbY9Bc2FDZFNPtuTNKBdGsTIRmCg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>599322286185</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ihlas.tgapi</string>
+	<key>PROJECT_ID</key>
+	<string>tg-abone-fapp</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tg-abone-fapp.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:599322286185:ios:30a727607d705b35a12af8</string>
+</dict>
+</plist>

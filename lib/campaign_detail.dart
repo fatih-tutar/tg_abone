@@ -1,73 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:tg_abone_fapp/models/network.dart';
 
 class CampaignDetail extends StatefulWidget {
-  final int campaign_id;
+  final int campaignId;
 
-  const CampaignDetail({Key key, this.campaign_id}) : super(key: key);
+  const CampaignDetail({Key key, this.campaignId}) : super(key: key);
 
   @override
   _CampaignDetailState createState() => _CampaignDetailState();
 }
 
 class _CampaignDetailState extends State<CampaignDetail> {
-  List campaigns = [
-    {
-      "id": 6,
-      "title": "A101 Yüzde 10 İndirim Kampanyası",
-      "text":
-          "100 TL üzeri alışverişlerinizde geçerli yüzde 10 indirimi kaçırmayın.",
-      "description":
-          "17 Mart 2021 Çarşamba günü Türkiye Gazetesi abonelerine özel 100 TL üzeri alışverişlerde geçerli %10 indirim sizleri bekliyor. İndirim Türkiye'deki bütün A101 şubelerinde geçerlidir.",
-      "image": "a101.jpg",
-      "started_at": "2021-03-17T18:00:00.000000Z",
-      "finished_at": "2021-03-18T18:00:00.000000Z",
-      "status": "draft",
-      "created_at": "2021-03-04T15:00:10.000000Z",
-      "updated_at": "2021-03-05T12:38:23.000000Z"
-    },
-    {
-      "id": 2,
-      "title": "Şok'ta Perşembe İndirimi",
-      "text":
-          "100 TL üzeri alışverişlerinizde geçerli yüzde 10 indirimi kaçırmayın.",
-      "description":
-          "11 Mart 2021 Perşembe günü Türkiye Gazetesi abonelerine özel 100 TL üzeri alışverişlerde geçerli %10 indirim sizleri bekliyor. İndirim Türkiye'deki bütün ŞOK şubelerinde geçerlidir.",
-      "image": "sok.jpg",
-      "started_at": "2021-03-11T16:17:00.000000Z",
-      "finished_at": "2021-03-12T16:17:00.000000Z",
-      "status": "publish",
-      "created_at": "2021-03-04T13:17:18.000000Z",
-      "updated_at": "2021-03-05T13:14:48.000000Z"
-    },
-    {
-      "id": 4,
-      "title": "Petrol Ofisi'nde İndirim Günü",
-      "text":
-          "100 TL üzeri alışverişlerinizde geçerli yüzde 10 indirimi kaçırmayın.",
-      "description":
-          "10 Mart 2021 Çarşamba günü Türkiye Gazetesi abonelerine özel 100 TL üzeri akaryakıt alışverişlerinde geçerli %10 indirim sizleri bekliyor. İndirim Türkiye'deki bütün Petrol Ofisi şubelerinde geçerlidir.",
-      "image": "po.png",
-      "started_at": "2021-03-10T16:17:00.000000Z",
-      "finished_at": "2021-03-11T16:17:00.000000Z",
-      "status": "draft",
-      "created_at": "2021-03-04T13:17:55.000000Z",
-      "updated_at": "2021-03-05T12:49:31.000000Z"
-    },
-    {
-      "id": 3,
-      "title": "Bim'de Çarşamba İndirimi",
-      "text":
-          "100 TL üzeri alışverişlerinizde geçerli yüzde 10 indirimi kaçırmayın.",
-      "description":
-          "17 Mart 2021 Çarşamba günü Türkiye Gazetesi abonelerine özel 100 TL üzeri alışverişlerde geçerli %10 indirim sizleri bekliyor. İndirim Türkiye'deki bütün A101 şubelerinde geçerlidir.",
-      "image": "bim.png",
-      "started_at": "2021-03-11T16:17:00.000000Z",
-      "finished_at": "2021-03-12T16:17:00.000000Z",
-      "status": "passive",
-      "created_at": "2021-03-04T13:17:36.000000Z",
-      "updated_at": "2021-03-05T13:14:55.000000Z"
-    }
-  ];
+  Future<dynamic> data;
+  @override
+  void initState() {
+    super.initState();
+    Network network = new Network('https://tgapi.ihlas.com.tr/json');
+    data = network.fetchData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +32,32 @@ class _CampaignDetailState extends State<CampaignDetail> {
           ),
         ),
       ),
-      body: Container(
+      body: FutureBuilder(
+        future: data,
+        builder: (context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            for (var i = 0; i < snapshot.data.length; i++) {
+              if (snapshot.data[i]['id'] == widget.campaignId) {
+                return campaignDetailWidget(snapshot.data, i);
+              } else {}
+            }
+            return null;
+          } else if (snapshot.hasError) {
+            return Text(
+              "Hata var. " + snapshot.error.toString(),
+              style: TextStyle(fontSize: 30),
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
+  }
+
+  Widget campaignDetailWidget(List<dynamic> data, int index) {
+    return SingleChildScrollView(
+      child: Container(
         decoration: BoxDecoration(
           color: Colors.grey.shade200,
         ),
@@ -97,13 +72,13 @@ class _CampaignDetailState extends State<CampaignDetail> {
                   Container(
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset(
-                            "img/" + campaigns[widget.campaign_id]['image'])),
+                        child: Image.network(
+                            "https://tgapi.ihlas.com.tr/${data[index]['image']}")),
                     padding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 5.0),
                   ),
                   Container(
                     child: Text(
-                      '${campaigns[widget.campaign_id]['title']}',
+                      '${data[index]['title']}',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -115,11 +90,11 @@ class _CampaignDetailState extends State<CampaignDetail> {
                   Container(
                     child: ListTile(
                       title: Text(
-                        '${campaigns[widget.campaign_id]['text']}',
+                        '${data[index]['shortdescription']}',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          height: 1.2,
+                          height: 2,
                           letterSpacing: 0.2,
                           fontFamily: 'Trajan Pro',
                         ),
@@ -140,7 +115,34 @@ class _CampaignDetailState extends State<CampaignDetail> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-            )
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    child: ListTile(
+                      title: Text(
+                        '${data[index]['description']}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          height: 2,
+                          letterSpacing: 0.2,
+                          fontFamily: 'Trajan Pro',
+                        ),
+                      ),
+                    ),
+                    padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                  ),
+                  SizedBox(
+                    height: 100,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

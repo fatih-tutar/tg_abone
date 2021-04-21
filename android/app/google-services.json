@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:599322286185:android:425a8c4260b120a4a12af8",
+        "mobilesdk_app_id": "1:599322286185:android:26fe5e8692dc5abfa12af8",
         "android_client_info": {
-          "package_name": "com.example.tg_abone_fapp"
+          "package_name": "com.ihlas.tgapi"
         }
       },
       "oauth_client": [
         {
-          "client_id": "599322286185-44dptai7atl36gpg8e6fn1gpv876aglr.apps.googleusercontent.com",
+          "client_id": "599322286185-2r4q3e5ohofbv82l30sitke235v9ncqj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.tg_abone_fapp",
+            "package_name": "com.ihlas.tgapi",
             "certificate_hash": "8dd814f88abac6395bb63cdf485e01210fb54b16"
           }
         },
@@ -37,6 +37,13 @@
             {
               "client_id": "599322286185-ds93ghkji2l44oatohin0o3fucfn59f4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "599322286185-fkl9ae8n7qi2bqu1lb57qo0le1cqj4jj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ihlas.tgapi"
+              }
             }
           ]
         }
