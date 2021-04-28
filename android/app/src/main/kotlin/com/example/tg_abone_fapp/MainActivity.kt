@@ -1,4 +1,4 @@
-package com.example.tg_abone_fapp
+package com.ihlas.tgapi
 
 import io.flutter.embedding.android.FlutterActivity
 
