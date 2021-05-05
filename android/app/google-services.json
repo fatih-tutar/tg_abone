@@ -14,11 +14,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "599322286185-2r4q3e5ohofbv82l30sitke235v9ncqj.apps.googleusercontent.com",
+          "client_id": "599322286185-inse8jflu500av9a1flk1thtg67vau5a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ihlas.tgapi",
             "certificate_hash": "8dd814f88abac6395bb63cdf485e01210fb54b16"
+          }
+        },
+        {
+          "client_id": "599322286185-ndca9sltkct3fgd7havi9ari1m4ccgk7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ihlas.tgapi",
+            "certificate_hash": "71a93f9632499a12c9f40546c9134250e4ad0029"
           }
         },
         {

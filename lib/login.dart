@@ -14,11 +14,22 @@ class _LoginState extends State<Login> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _smsController = TextEditingController();
-  String _verificationId;
   final SmsAutoFill _autoFill = SmsAutoFill();
+  String _verificationId;
   String kodlunumber;
-  int loginScreen = 0;
-  int telnosecim = 0;
+  int loginScreen;
+  int telnosecim;
+  int telnoerror;
+  int koderror;
+
+  @override
+  void initState() {
+    loginScreen = 0;
+    telnosecim = 0;
+    telnoerror = 0;
+    koderror = 0;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,9 +124,16 @@ class _LoginState extends State<Login> {
                           onPressed: () async {
                             FocusScope.of(context).requestFocus(FocusNode());
                             verifyPhoneNumber();
-                            setState(() {
-                              loginScreen = 1;
-                            });
+                            if (_phoneNumberController.text.isEmpty ||
+                                _phoneNumberController.text.length != 10) {
+                              setState(() {
+                                telnoerror = 1;
+                              });
+                            } else {
+                              setState(() {
+                                loginScreen = 1;
+                              });
+                            }
                             CircularProgressIndicator();
                           },
                           child: Text(
@@ -133,6 +151,37 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                 ),
+                SizedBox(height: 20),
+                telnoerror == 1
+                    ? Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset:
+                                  Offset(0, 3), // changes position of shadow
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(0.0),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Telefon numaranızı başında sıfır olmadan ve boşluk bırakmadan  10 haneli olacak şekilde giriniz.",
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontFamily: 'Lucida',
+                                  letterSpacing: 1.5,
+                                  color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(),
               ],
             )
           : Column(
@@ -255,15 +304,48 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                 ),
+                SizedBox(height: 20),
+                koderror == 1
+                    ? Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset:
+                                  Offset(0, 3), // changes position of shadow
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(0.0),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Yazdığınız kod hatalıdır. Tekrar deneyiniz.",
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontFamily: 'Lucida',
+                                  letterSpacing: 1.5,
+                                  color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(),
               ],
             ),
     );
   }
 
   void verifyPhoneNumber() async {
-    PhoneVerificationCompleted verificationCompleted = (PhoneAuthCredential phoneAuthCredential) async {
+    PhoneVerificationCompleted verificationCompleted =
+        (PhoneAuthCredential phoneAuthCredential) async {
       await _auth.signInWithCredential(phoneAuthCredential);
-      final User user = (await _auth.signInWithCredential(phoneAuthCredential)).user;
+      final User user =
+          (await _auth.signInWithCredential(phoneAuthCredential)).user;
 
       Navigator.pushReplacement(
         context,
@@ -273,28 +355,30 @@ class _LoginState extends State<Login> {
           ),
         ),
       );
-      //showSnackbar(
-      //  "Telefon numarası otomatik olarak doğrulandı ve kullanıcı giriş yaptı : ${_auth.currentUser.uid}");
+      showSnackbar(
+          "Telefon numarası otomatik olarak doğrulandı ve kullanıcı giriş yaptı : ${_auth.currentUser.uid}");
     };
 
     PhoneVerificationFailed verificationFailed =
         (FirebaseAuthException authException) {
-      //showSnackbar(
-      //  'Telefon numarası doğrulaması yapılamadı: Code: ${authException.code}. Message: ${authException.message}');
+      showSnackbar(
+          'Telefon numarası doğrulaması yapılamadı: Code: ${authException.code}. Message: ${authException.message}');
     };
 
     PhoneCodeSent codeSent =
         (String verificationId, [int forceResendingToken]) async {
-      //showSnackbar('Lütfen telefonunuza gönderilen sms kodunu kontrol ediniz.');
+      showSnackbar('Lütfen telefonunuza gönderilen sms kodunu kontrol ediniz.');
       _verificationId = verificationId;
     };
 
     PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) {
-      //showSnackbar("Doğrulama kodu : " + verificationId);
+      showSnackbar("Doğrulama kodu : " + verificationId);
       _verificationId = verificationId;
     };
+
     String editedPhoneNumber = "+90" + _phoneNumberController.text;
+
     try {
       await _auth.verifyPhoneNumber(
           phoneNumber: editedPhoneNumber,
@@ -304,8 +388,8 @@ class _LoginState extends State<Login> {
           codeSent: codeSent,
           codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
     } catch (e) {
-      //showSnackbar(
-      //  "Telefon numarası doğrulama işleme başarısızlıkla sonuçlandı: $e");
+      showSnackbar(
+          "Telefon numarası doğrulama işleme başarısızlıkla sonuçlandı: $e");
     }
   }
 
@@ -318,7 +402,7 @@ class _LoginState extends State<Login> {
 
       final User user = (await _auth.signInWithCredential(credential)).user;
 
-      //showSnackbar("Giriş işlemi yapıldı: ${user.uid}");
+      showSnackbar("Giriş işlemi yapıldı: ${user.uid}");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -328,7 +412,10 @@ class _LoginState extends State<Login> {
         ),
       );
     } catch (e) {
-      //showSnackbar("Giriş yapılamadı: " + e.toString());
+      showSnackbar(e.toString());
+      setState(() {
+        koderror = 1;
+      });
     }
   }
 
