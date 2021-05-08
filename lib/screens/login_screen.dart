@@ -2,15 +2,24 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sms_autofill/sms_autofill.dart';
-import 'package:tg_abone_fapp/campaign_page.dart';
+import 'package:tg_abone_fapp/screens/home_screen.dart';
 
-class Login extends StatefulWidget {
-  @override
-  _LoginState createState() => _LoginState();
+enum MobileVerificationState {
+  SHOW_MOBILE_FORM_STATE,
+  SHOW_OTP_FORM_STATE,
 }
 
-class _LoginState extends State<Login> {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  
+  final currentState = MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  User _user;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _smsController = TextEditingController();
@@ -28,6 +37,17 @@ class _LoginState extends State<Login> {
     telnosecim = 0;
     telnoerror = 0;
     koderror = 0;
+    _user = _auth.currentUser;
+    if (_user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(
+            auth: _auth,
+          ),
+        ),
+      );
+    }
     super.initState();
   }
 
@@ -344,14 +364,14 @@ class _LoginState extends State<Login> {
     PhoneVerificationCompleted verificationCompleted =
         (PhoneAuthCredential phoneAuthCredential) async {
       await _auth.signInWithCredential(phoneAuthCredential);
-      final User user =
-          (await _auth.signInWithCredential(phoneAuthCredential)).user;
+      //final User user =
+      //  (await _auth.signInWithCredential(phoneAuthCredential)).user;
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => CampaignPage(
-            user: user,
+          builder: (context) => HomeScreen(
+            auth: _auth,
           ),
         ),
       );
@@ -406,8 +426,8 @@ class _LoginState extends State<Login> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => CampaignPage(
-            user: user,
+          builder: (context) => HomeScreen(
+            auth: _auth,
           ),
         ),
       );

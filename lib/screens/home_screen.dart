@@ -1,18 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tg_abone_fapp/campaign_detail.dart';
-import 'package:tg_abone_fapp/login.dart';
+import 'package:tg_abone_fapp/screens/login_screen.dart';
 import 'package:tg_abone_fapp/models/network.dart';
 
-class CampaignPage extends StatefulWidget {
-  CampaignPage({Key key, this.user}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  HomeScreen({Key key, this.auth}) : super(key: key);
 
-  final User user;
+  final FirebaseAuth auth;
   @override
-  _CampaignPageState createState() => _CampaignPageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _CampaignPageState extends State<CampaignPage> {
+class _HomeScreenState extends State<HomeScreen> {
   Future<dynamic> data;
   @override
   void initState() {
@@ -36,11 +36,12 @@ class _CampaignPageState extends State<CampaignPage> {
               color: Colors.red,
               size: 30,
             ),
-            onPressed: () {
+            onPressed: () async {
+              await widget.auth.signOut();
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Login(),
+                  builder: (context) => LoginScreen(),
                 ),
               );
             },
