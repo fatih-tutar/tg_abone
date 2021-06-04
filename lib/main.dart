@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,9 @@ import 'screens/login/login_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //SPLASH EKRANDA ÜST VE ALT BİLDİRİM ÇUBUĞUNUN KAYBOLMASI İÇİN GEREKLİ BİR KOD
+  SystemChrome.setEnabledSystemUIOverlays(
+      [SystemUiOverlay.bottom, SystemUiOverlay.top]);
   await Firebase.initializeApp();
 
   OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
