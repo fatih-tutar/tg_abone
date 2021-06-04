@@ -1,28 +1,20 @@
 {
   "project_info": {
-    "project_number": "599322286185",
-    "project_id": "tg-abone-fapp",
-    "storage_bucket": "tg-abone-fapp.appspot.com"
+    "project_number": "262842884080",
+    "project_id": "tg-abone",
+    "storage_bucket": "tg-abone.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:599322286185:android:26fe5e8692dc5abfa12af8",
+        "mobilesdk_app_id": "1:262842884080:android:43c15e68a759ee37f44735",
         "android_client_info": {
           "package_name": "com.ihlas.tgapi"
         }
       },
       "oauth_client": [
         {
-          "client_id": "599322286185-inse8jflu500av9a1flk1thtg67vau5a.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ihlas.tgapi",
-            "certificate_hash": "8dd814f88abac6395bb63cdf485e01210fb54b16"
-          }
-        },
-        {
-          "client_id": "599322286185-ndca9sltkct3fgd7havi9ari1m4ccgk7.apps.googleusercontent.com",
+          "client_id": "262842884080-ql3ds9vccdrurgdt8ro6piasn95jibrb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ihlas.tgapi",
@@ -30,28 +22,37 @@
           }
         },
         {
-          "client_id": "599322286185-ds93ghkji2l44oatohin0o3fucfn59f4.apps.googleusercontent.com",
+          "client_id": "262842884080-qqef7in9q6pc1dcbt1p73mpm9r0tsrkp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ihlas.tgapi",
+            "certificate_hash": "8dd814f88abac6395bb63cdf485e01210fb54b16"
+          }
+        },
+        {
+          "client_id": "262842884080-s626c0miaf58gmjtr637fcq2k6ee36bm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ihlas.tgapi",
+            "certificate_hash": "7545a1f65417b4f25ed1a2e7465a592c0c7f81db"
+          }
+        },
+        {
+          "client_id": "262842884080-e6siloat2gim1nu4uslogm0vtocv4332.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD6-IlOlZrlWO5TVzWvLoihjl1xmTS4yFM"
+          "current_key": "AIzaSyBEp6-iW5iV7wI3wE1-ijWfXIsaD5XusCI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "599322286185-ds93ghkji2l44oatohin0o3fucfn59f4.apps.googleusercontent.com",
+              "client_id": "262842884080-e6siloat2gim1nu4uslogm0vtocv4332.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "599322286185-fkl9ae8n7qi2bqu1lb57qo0le1cqj4jj.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.ihlas.tgapi"
-              }
             }
           ]
         }

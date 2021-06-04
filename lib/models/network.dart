@@ -8,7 +8,7 @@ class Network {
   Network(this.url);
 
   Future<dynamic> fetchData() async {
-    Response response = await get(Uri.encodeFull(url));
+    Response response = await get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
