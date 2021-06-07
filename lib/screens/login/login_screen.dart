@@ -27,14 +27,12 @@ class _LoginScreenState extends State<LoginScreen> {
   String verificationId;
   bool showLoading = false;
   String kodlunumber;
-  int loginScreen;
   int telnosecim;
   int telnoerror;
   int koderror;
 
   @override
   void initState() {
-    loginScreen = 0;
     telnosecim = 0;
     telnoerror = 0;
     koderror = 0;
@@ -59,9 +57,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       setState(() {
         showLoading = false;
+        koderror = 1;
       });
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message.toString())));
     }
   }
 
@@ -142,38 +139,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     primary: Colors.white,
                   ),
                   onPressed: () async {
-                    setState(() {
-                      showLoading = true;
-                    });
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    String editedPhoneNumber =
-                        "+90" + _phoneNumberController.text;
-                    await _auth.verifyPhoneNumber(
-                      phoneNumber: editedPhoneNumber,
-                      verificationCompleted: (phoneAuthCredential) async {
-                        setState(() {
-                          showLoading = false;
-                        });
-                        //signInWithPhoneAuthCredential(phoneAuthCredential);
-                      },
-                      verificationFailed: (verificationFailed) async {
-                        setState(() {
-                          showLoading = false;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content:
-                                Text(verificationFailed.message.toString())));
-                      },
-                      codeSent: (verificationId, resendingToken) async {
-                        setState(() {
-                          showLoading = false;
-                          currentState =
-                              MobileVerificationState.SHOW_OTP_FORM_STATE;
-                          this.verificationId = verificationId;
-                        });
-                      },
-                      codeAutoRetrievalTimeout: (verificationId) async {},
-                    );
                     if (_phoneNumberController.text.isEmpty ||
                         _phoneNumberController.text.length != 10) {
                       setState(() {
@@ -181,8 +146,35 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
                     } else {
                       setState(() {
-                        loginScreen = 1;
+                        showLoading = true;
                       });
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      String editedPhoneNumber =
+                          "+90" + _phoneNumberController.text;
+                      await _auth.verifyPhoneNumber(
+                        phoneNumber: editedPhoneNumber,
+                        verificationCompleted: (phoneAuthCredential) async {
+                          setState(() {
+                            showLoading = false;
+                          });
+                          //signInWithPhoneAuthCredential(phoneAuthCredential);
+                        },
+                        verificationFailed: (verificationFailed) async {
+                          setState(() {
+                            showLoading = false;
+                            telnoerror = 2;
+                          });
+                        },
+                        codeSent: (verificationId, resendingToken) async {
+                          setState(() {
+                            showLoading = false;
+                            currentState =
+                                MobileVerificationState.SHOW_OTP_FORM_STATE;
+                            this.verificationId = verificationId;
+                          });
+                        },
+                        codeAutoRetrievalTimeout: (verificationId) async {},
+                      );
                     }
                     CircularProgressIndicator();
                   },
@@ -202,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         SizedBox(height: 20),
-        telnoerror == 1
+        telnoerror == 1 || telnoerror == 2
             ? Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -220,7 +212,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   children: [
                     Text(
-                      "Telefon numaranızı başında sıfır olmadan ve boşluk bırakmadan  10 haneli olacak şekilde giriniz.",
+                      telnoerror == 1
+                          ? "Telefon numaranızı başında sıfır olmadan ve boşluk bırakmadan  10 haneli olacak şekilde giriniz."
+                          : "Doğrulama kodunuzu defaatle yanlış girdiğiniz için numaranız bloke olmuştur. Daha sonra tekrar deneyiniz.",
                       style: TextStyle(
                           fontSize: 17,
                           fontFamily: 'Lucida',
@@ -330,12 +324,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     primary: Colors.white,
                   ),
                   onPressed: () async {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    PhoneAuthCredential phoneAuthCredential =
-                        PhoneAuthProvider.credential(
-                            verificationId: verificationId.toString(),
-                            smsCode: _smsController.text);
-                    signInWithPhoneAuthCredential(phoneAuthCredential);
+                    if (_smsController.text.length != 6) {
+                      setState(() {
+                        koderror = 1;
+                      });
+                    } else {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      PhoneAuthCredential phoneAuthCredential =
+                          PhoneAuthProvider.credential(
+                              verificationId: verificationId.toString(),
+                              smsCode: _smsController.text);
+                      signInWithPhoneAuthCredential(phoneAuthCredential);
+                    }
                   },
                   child: Text(
                     'Giriş',
@@ -356,7 +356,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ? Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.orange,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
@@ -367,17 +367,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                   borderRadius: BorderRadius.circular(0.0),
                 ),
-                child: Column(
-                  children: [
-                    Text(
-                      "Yazdığınız kod hatalıdır. Tekrar deneyiniz.",
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontFamily: 'Lucida',
-                          letterSpacing: 1.5,
-                          color: Colors.black),
-                    ),
-                  ],
+                child: Text(
+                  "Yazdığınız kod hatalıdır. Mesajla gelen kodu lütfen kontrol ediniz.",
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontFamily: 'Lucida',
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                      color: Colors.white),
                 ),
               )
             : Container()
@@ -396,13 +393,16 @@ class _LoginScreenState extends State<LoginScreen> {
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : Column(
-                children: [
-                  getLogoWidget(context),
-                  currentState == MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                      ? getMobileFormWidget(context)
-                      : getOtpFormWidget(context),
-                ],
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    getLogoWidget(context),
+                    currentState ==
+                            MobileVerificationState.SHOW_MOBILE_FORM_STATE
+                        ? getMobileFormWidget(context)
+                        : getOtpFormWidget(context),
+                  ],
+                ),
               ),
       ),
     );
