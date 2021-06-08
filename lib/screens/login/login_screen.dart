@@ -1,9 +1,9 @@
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../home_screen.dart';
-import 'widgets/logo_widget.dart';
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
@@ -55,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
             context, MaterialPageRoute(builder: (context) => HomeScreen()));
       }
     } on FirebaseAuthException catch (e) {
+      print(e);
       setState(() {
         showLoading = false;
         koderror = 1;
@@ -65,6 +66,13 @@ class _LoginScreenState extends State<LoginScreen> {
   getMobileFormWidget(context) {
     return Column(
       children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.1,
+        ),
+        Image.asset("img/icon.png", height: 125, fit: BoxFit.fill),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.1,
+        ),
         Container(
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -230,8 +238,31 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   getOtpFormWidget(context) {
+    CountDownController _controller = CountDownController();
     return Column(
       children: [
+        CircularCountDownTimer(
+          width: MediaQuery.of(context).size.width / 2.5,
+          height: MediaQuery.of(context).size.height / 2.5,
+          duration: 60,
+          fillColor: Color(0xFFe03543),
+          ringColor: Colors.white,
+          controller: _controller,
+          backgroundColor: Colors.white54,
+          strokeWidth: 10.0,
+          strokeCap: StrokeCap.round,
+          isTimerTextShown: true,
+          isReverse: true,
+          onComplete: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginScreen(),
+              ),
+            );
+          },
+          textStyle: TextStyle(fontSize: 50.0, color: Color(0xFFe03543)),
+        ),
         Container(
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -396,11 +427,10 @@ class _LoginScreenState extends State<LoginScreen> {
             : SingleChildScrollView(
                 child: Column(
                   children: [
-                    getLogoWidget(context),
                     currentState ==
                             MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                        ? getMobileFormWidget(context)
-                        : getOtpFormWidget(context),
+                        ? getOtpFormWidget(context)
+                        : getMobileFormWidget(context),
                   ],
                 ),
               ),

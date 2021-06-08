@@ -30,6 +30,7 @@ dependencies:
   http: ^0.13.3
   onesignal_flutter: ^2.6.3
   sms_autofill: ^2.0.0
+  circular_countdown_timer: ^0.2.0
 
 dev_dependencies:
   flutter_test:
