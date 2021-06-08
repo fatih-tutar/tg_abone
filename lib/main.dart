@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       // Replace the 3 second delay with your initialization code:
-      future: Future.delayed(Duration(seconds: 3)),
+      future: Future.delayed(Duration(seconds: 2)),
       builder: (context, AsyncSnapshot snapshot) {
         // Show splash screen while waiting for app resources to load:
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -48,6 +48,7 @@ class MyApp extends StatelessWidget {
         } else {
           // Loading is done, return the app:
           return MaterialApp(
+            theme: ThemeData(primaryColor: Color(0xFFe03543)),
             debugShowCheckedModeBanner: false,
             home: InitializerWidget(),
           );

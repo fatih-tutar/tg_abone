@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
+import 'ayarlar.dart';
 import 'campaign_screen.dart';
 import 'login/login_screen.dart';
 import '../models/network.dart';
+import 'profil.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,6 +15,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _auth = FirebaseAuth.instance;
+
+  //BOTTOM NAVIGATION BAR İÇİN
+  int _page = 1;
+  GlobalKey _bottomNavigationKey = GlobalKey();
 
   Future<dynamic> data;
   @override
@@ -52,21 +59,45 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           color: Color(0xFFf5f5f5),
         ),
-        child: FutureBuilder(
-          future: data,
-          builder: (context, AsyncSnapshot<dynamic> snapshot) {
-            if (snapshot.hasData) {
-              return customList(context, snapshot.data);
-            } else if (snapshot.hasError) {
-              return Text(
-                "Hata var. " + snapshot.error.toString(),
-                style: TextStyle(fontSize: 30),
-              );
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
+        child: _page == 1
+            ? FutureBuilder(
+                future: data,
+                builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.hasData) {
+                    return customList(context, snapshot.data);
+                  } else if (snapshot.hasError) {
+                    return Text(
+                      "Hata var. " + snapshot.error.toString(),
+                      style: TextStyle(fontSize: 30),
+                    );
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              )
+            : _page == 2
+                ? Ayarlar()
+                : Profil(),
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
+        key: _bottomNavigationKey,
+        index: 1,
+        height: 50.0,
+        items: <Widget>[
+          Icon(Icons.perm_identity, size: 30, color: Colors.white),
+          Icon(Icons.home, size: 30, color: Colors.white),
+          Icon(Icons.settings, size: 30, color: Colors.white),
+        ],
+        color: Color(0xFFe03543),
+        buttonBackgroundColor: Color(0xFFe03543),
+        backgroundColor: Colors.white,
+        animationCurve: Curves.easeInOutQuint,
+        animationDuration: Duration(milliseconds: 1000),
+        onTap: (index) {
+          setState(() {
+            _page = index;
+          });
+        },
       ),
     );
   }
@@ -84,12 +115,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Column(
                 children: [
+                  //KAMPANYA FOTOĞRAFI
                   Container(
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),
                           child: Image.network(
                               "https://tgapi.ihlas.com.tr/${data[index]['image']}")),
                       padding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 5.0)),
+                  //KAMPANYA BAŞLIĞI
                   Container(
                     child: Text(
                       '${data[index]['title']}',
@@ -101,6 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.fromLTRB(15.0, 10.0, 10.0, 5.0),
                   ),
+                  //KAMPANYA KISA AÇIKLAMASI
                   Container(
                     child: ListTile(
                       title: Text(

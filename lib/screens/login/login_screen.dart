@@ -244,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
         CircularCountDownTimer(
           width: MediaQuery.of(context).size.width / 2.5,
           height: MediaQuery.of(context).size.height / 2.5,
-          duration: 60,
+          duration: 180,
           fillColor: Color(0xFFe03543),
           ringColor: Colors.white,
           controller: _controller,
@@ -429,8 +429,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     currentState ==
                             MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                        ? getOtpFormWidget(context)
-                        : getMobileFormWidget(context),
+                        ? getMobileFormWidget(context)
+                        : getOtpFormWidget(context),
                   ],
                 ),
               ),
