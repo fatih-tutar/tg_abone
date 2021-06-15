@@ -1,4 +1,5 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sms_autofill/sms_autofill.dart';
@@ -24,17 +25,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final SmsAutoFill _autoFill = SmsAutoFill();
 
   FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String verificationId;
   bool showLoading = false;
   String kodlunumber;
   int telnosecim;
-  int telnoerror;
+  String telnoerror;
   int koderror;
+  bool aboneMi = false;
 
   @override
   void initState() {
     telnosecim = 0;
-    telnoerror = 0;
+    telnoerror = "";
     koderror = 0;
     super.initState();
   }
@@ -130,7 +133,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     hintText: 'Telefon',
                     hintStyle: TextStyle(
-                        color: Colors.black, fontSize: 20, letterSpacing: 2),
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontFamily: 'OpenSans',
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -150,7 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (_phoneNumberController.text.isEmpty ||
                         _phoneNumberController.text.length != 10) {
                       setState(() {
-                        telnoerror = 1;
+                        showLoading = false;
+                        telnoerror =
+                            "Telefon numaranızı başında sıfır olmadan ve boşluk bırakmadan  10 haneli olacak şekilde giriniz.";
                       });
                     } else {
                       setState(() {
@@ -159,40 +167,58 @@ class _LoginScreenState extends State<LoginScreen> {
                       FocusScope.of(context).requestFocus(FocusNode());
                       String editedPhoneNumber =
                           "+90" + _phoneNumberController.text;
-                      await _auth.verifyPhoneNumber(
-                        phoneNumber: editedPhoneNumber,
-                        verificationCompleted: (phoneAuthCredential) async {
-                          setState(() {
-                            showLoading = false;
-                          });
-                          //signInWithPhoneAuthCredential(phoneAuthCredential);
-                        },
-                        verificationFailed: (verificationFailed) async {
-                          setState(() {
-                            showLoading = false;
-                            telnoerror = 2;
-                          });
-                        },
-                        codeSent: (verificationId, resendingToken) async {
-                          setState(() {
-                            showLoading = false;
-                            currentState =
-                                MobileVerificationState.SHOW_OTP_FORM_STATE;
-                            this.verificationId = verificationId;
-                          });
-                        },
-                        codeAutoRetrievalTimeout: (verificationId) async {},
-                      );
+
+                      CollectionReference aboneRef =
+                          _firestore.collection('aboneler');
+                      var response = await aboneRef.get();
+                      var aboneListesi = response.docs;
+                      aboneListesi.forEach((abone) {
+                        if (abone.id == _phoneNumberController.text) {
+                          aboneMi = true;
+                        }
+                      });
+
+                      if (aboneMi == true) {
+                        await _auth.verifyPhoneNumber(
+                          phoneNumber: editedPhoneNumber,
+                          verificationCompleted: (phoneAuthCredential) async {
+                            setState(() {
+                              showLoading = false;
+                            });
+                            //signInWithPhoneAuthCredential(phoneAuthCredential);
+                          },
+                          verificationFailed: (verificationFailed) async {
+                            setState(() {
+                              showLoading = false;
+                              telnoerror =
+                                  "Doğrulama kodunuzu defaatle yanlış girdiğiniz için numaranız bloke olmuştur. Daha sonra tekrar deneyiniz.";
+                            });
+                          },
+                          codeSent: (verificationId, resendingToken) async {
+                            setState(() {
+                              showLoading = false;
+                              currentState =
+                                  MobileVerificationState.SHOW_OTP_FORM_STATE;
+                              this.verificationId = verificationId;
+                            });
+                          },
+                          codeAutoRetrievalTimeout: (verificationId) async {},
+                        );
+                      } else {
+                        setState(() {
+                          showLoading = false;
+                          telnoerror =
+                              "Bu numara ile abonelik bulunmamaktadır.";
+                        });
+                      }
                     }
                     CircularProgressIndicator();
                   },
                   child: Text(
-                    'Giriş',
+                    'Kod Gönder',
                     style: TextStyle(
                       color: Colors.black,
-                      letterSpacing: 5,
-                      fontSize: 23.0,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
                       fontFamily: 'OpenSans',
                     ),
                   ),
@@ -202,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         SizedBox(height: 20),
-        telnoerror == 1 || telnoerror == 2
+        telnoerror != ""
             ? Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -220,12 +246,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   children: [
                     Text(
-                      telnoerror == 1
-                          ? "Telefon numaranızı başında sıfır olmadan ve boşluk bırakmadan  10 haneli olacak şekilde giriniz."
-                          : "Doğrulama kodunuzu defaatle yanlış girdiğiniz için numaranız bloke olmuştur. Daha sonra tekrar deneyiniz.",
+                      telnoerror,
                       style: TextStyle(
                           fontSize: 17,
-                          fontFamily: 'Lucida',
+                          fontFamily: 'OpenSans',
                           letterSpacing: 1.5,
                           color: Colors.black),
                     ),
@@ -233,6 +257,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               )
             : Container(),
+        SizedBox(height: 20),
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height / 10,
+          child: ElevatedButton(
+            onPressed: () {},
+            child: Text("Abonelik Formu"),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.amber),
+              foregroundColor: MaterialStateProperty.all(Colors.black),
+              elevation: MaterialStateProperty.all(10.0),
+              textStyle: MaterialStateProperty.all(TextStyle(
+                fontSize: 20,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
+              )),
+            ),
+          ),
+        ),
       ],
     );
   }
