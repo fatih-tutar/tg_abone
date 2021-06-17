@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../home_screen.dart';
+import 'abonelik_formu.dart';
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
@@ -262,7 +263,10 @@ class _LoginScreenState extends State<LoginScreen> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height / 10,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AbonelikFormu()));
+            },
             child: Text("Abonelik Formu"),
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.amber),
@@ -460,23 +464,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: Container(
-        child: showLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    currentState ==
-                            MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                        ? getMobileFormWidget(context)
-                        : getOtpFormWidget(context),
-                  ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: Container(
+          child: showLoading
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      currentState ==
+                              MobileVerificationState.SHOW_MOBILE_FORM_STATE
+                          ? getMobileFormWidget(context)
+                          : getOtpFormWidget(context),
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }
