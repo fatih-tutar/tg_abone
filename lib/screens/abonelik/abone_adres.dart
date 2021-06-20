@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tg_abone_fapp/screens/abonelik/abone_odeme.dart';
+import 'abone_odeme.dart';
 
 class AboneAdres extends StatefulWidget {
   final String tel;
@@ -42,8 +42,6 @@ class _AboneAdresState extends State<AboneAdres> {
           child: Form(
             child: Column(
               children: [
-                Text(widget.tel),
-                Text(widget.adsoyad),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.3,
                 ),

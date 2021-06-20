@@ -6,7 +6,6 @@ import 'package:sms_autofill/sms_autofill.dart';
 import 'package:tg_abone_fapp/screens/abonelik/abone_tel.dart';
 
 import '../home_screen.dart';
-import '../abonelik/abonelik_formu.dart';
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
