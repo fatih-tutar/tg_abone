@@ -3,22 +3,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sms_autofill/sms_autofill.dart';
-import 'package:tg_abone_fapp/screens/abonelik/abone_tel.dart';
 
-import '../home_screen.dart';
-import '../abonelik/abonelik_formu.dart';
+import 'abonelik_formu.dart';
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
   SHOW_OTP_FORM_STATE,
 }
 
-class LoginScreen extends StatefulWidget {
+class AboneTel extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _AboneTelState createState() => _AboneTelState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _AboneTelState extends State<AboneTel> {
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
 
@@ -50,15 +48,14 @@ class _LoginScreenState extends State<LoginScreen> {
       showLoading = true;
     });
     try {
-      final authCredential =
-          await _auth.signInWithCredential(phoneAuthCredential);
       setState(() {
         showLoading = false;
       });
-      if (authCredential.user != null) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
-      }
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  AbonelikFormu(tel: _phoneNumberController.text)));
     } on FirebaseAuthException catch (e) {
       print(e);
       setState(() {
@@ -72,16 +69,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.1,
-        ),
-        Image.asset("img/icon.png", height: 125, fit: BoxFit.fill),
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.1,
+          height: MediaQuery.of(context).size.height * 0.3,
         ),
         Container(
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Color(0xFFe03543),
+            color: Colors.amber,
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
@@ -152,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(0.0),
                     ),
-                    primary: Color(0xFFf1faee),
+                    primary: Color(0xFFc8b89b),
                   ),
                   onPressed: () async {
                     if (_phoneNumberController.text.isEmpty ||
@@ -180,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         }
                       });
 
-                      if (aboneMi == true) {
+                      if (aboneMi == false) {
                         await _auth.verifyPhoneNumber(
                           phoneNumber: editedPhoneNumber,
                           verificationCompleted: (phoneAuthCredential) async {
@@ -210,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() {
                           showLoading = false;
                           telnoerror =
-                              "Bu numara ile abonelik bulunmamaktadır.";
+                              "Bu numara ile abonelik bulunmaktadır. Lütfen sadece giriş yapınız.";
                         });
                       }
                     }
@@ -219,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(
                     'Kod Gönder',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontSize: 20.0,
                       fontFamily: 'OpenSans',
                     ),
@@ -259,28 +252,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               )
             : Container(),
-        SizedBox(height: 20),
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height / 10,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => AboneTel()));
-            },
-            child: Text("Abonelik Formu"),
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.amber),
-              foregroundColor: MaterialStateProperty.all(Colors.black),
-              elevation: MaterialStateProperty.all(10.0),
-              textStyle: MaterialStateProperty.all(TextStyle(
-                fontSize: 20,
-                fontFamily: 'OpenSans',
-                fontWeight: FontWeight.bold,
-              )),
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -290,10 +261,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       children: [
         CircularCountDownTimer(
-          width: MediaQuery.of(context).size.width / 2.5,
-          height: MediaQuery.of(context).size.height / 2.5,
+          width: MediaQuery.of(context).size.width / 3,
+          height: MediaQuery.of(context).size.height / 3,
           duration: 180,
-          fillColor: Color(0xFFe03543),
+          fillColor: Colors.amber,
           ringColor: Colors.white,
           controller: _controller,
           backgroundColor: Colors.white54,
@@ -305,11 +276,11 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => LoginScreen(),
+                builder: (context) => AboneTel(),
               ),
             );
           },
-          textStyle: TextStyle(fontSize: 50.0, color: Color(0xFFe03543)),
+          textStyle: TextStyle(fontSize: 40.0, color: Colors.amber),
         ),
         Container(
           padding: EdgeInsets.all(20),
@@ -342,7 +313,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Container(
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Color(0xFFe03543),
+            color: Colors.amber,
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
@@ -400,7 +371,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(0.0),
                     ),
-                    primary: Colors.white,
+                    primary: Color(0xFFc8b89b),
                   ),
                   onPressed: () async {
                     if (_smsController.text.length != 6) {
@@ -416,14 +387,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       signInWithPhoneAuthCredential(phoneAuthCredential);
                     }
                   },
-                  child: Text(
-                    'Giriş',
-                    style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 5,
-                      fontSize: 20.0,
-                      fontFamily: 'OpenSans',
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(""),
+                      Text(
+                        'Devam Et',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontFamily: 'OpenSans',
+                        ),
+                      ),
+                      Icon(Icons.arrow_forward),
+                    ],
                   ),
                 ),
               ),
@@ -435,7 +412,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ? Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.orange,
+                  color: Colors.teal,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
@@ -469,6 +446,17 @@ class _LoginScreenState extends State<LoginScreen> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text(
+            'Abone Ol',
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.amber,
+          iconTheme: IconThemeData(
+            color: Colors.black,
+          ),
+        ),
         body: Container(
           child: showLoading
               ? Center(
