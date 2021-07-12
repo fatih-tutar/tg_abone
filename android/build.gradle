@@ -1,9 +1,10 @@
 buildscript {
-    ext.kotlin_version = '1.4.10'
+    ext.kotlin_version = '1.5.20-RC'
     repositories {
         google()
-        jcenter()
-        maven { url 'https://plugins.gradle.org/m2/' } // Gradle Plugin Portal
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 
     dependencies {
